@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { contactChannels, profile } from '../data/portfolio'
+import { asset } from '../utils/asset'
 
 const year = new Date().getFullYear()
 const links = contactChannels.filter((channel) => channel.external)
@@ -31,7 +32,7 @@ const links = contactChannels.filter((channel) => channel.external)
           {{ link.label }}
         </a>
         <a
-          :href="profile.cv"
+          :href="asset(profile.cv)"
           download
           class="label text-ink-3 transition-colors hover:text-accent"
         >

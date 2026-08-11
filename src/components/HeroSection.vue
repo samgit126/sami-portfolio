@@ -2,6 +2,7 @@
 import ArchitectureDiagram from './ArchitectureDiagram.vue'
 import { vReveal } from '../directives/reveal'
 import { profile, stats } from '../data/portfolio'
+import { asset } from '../utils/asset'
 </script>
 
 <template>
@@ -34,7 +35,7 @@ import { profile, stats } from '../data/portfolio'
         <div v-reveal:1 class="mt-7 flex items-center gap-4">
           <div class="relative shrink-0">
             <img
-              :src="profile.photo"
+              :src="asset(profile.photo)"
               :alt="profile.photoAlt"
               width="128"
               height="128"
@@ -101,7 +102,7 @@ import { profile, stats } from '../data/portfolio'
           </a>
 
           <a
-            :href="profile.cv"
+            :href="asset(profile.cv)"
             download
             class="group inline-flex items-center gap-2.5 px-2 py-3 font-mono text-xs uppercase tracking-[0.16em] text-ink-3 transition-colors hover:text-accent"
           >

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import SectionShell from './SectionShell.vue'
 import { vReveal } from '../directives/reveal'
 import { contactChannels, profile } from '../data/portfolio'
+import { asset } from '../utils/asset'
 
 const copiedId = ref<string | null>(null)
 let resetTimer: ReturnType<typeof setTimeout> | undefined
@@ -137,7 +138,7 @@ async function copy(id: string, value: string) {
       </a>
 
       <a
-        :href="profile.cv"
+        :href="asset(profile.cv)"
         download
         class="group inline-flex shrink-0 items-center gap-2.5 border border-line-strong px-5 py-3 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors hover:border-accent hover:text-accent"
       >

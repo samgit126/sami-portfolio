@@ -2,6 +2,7 @@
 import SectionShell from './SectionShell.vue'
 import { vReveal } from '../directives/reveal'
 import { contributions } from '../data/portfolio'
+import { asset } from '../utils/asset'
 </script>
 
 <template>
@@ -54,7 +55,7 @@ import { contributions } from '../data/portfolio'
 
           <img
             v-if="source.image"
-            :src="source.image"
+            :src="asset(source.image!)"
             :alt="source.imageAlt"
             width="1280"
             height="320"

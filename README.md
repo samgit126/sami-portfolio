@@ -132,9 +132,16 @@ flash of the wrong theme.
 **Netlify** — import the repo; `netlify.toml` does the same.
 
 **GitHub Pages** — `.github/workflows/deploy.yml` builds and publishes on every push to `main`.
-Enable it under *Settings → Pages → Source: GitHub Actions*. The workflow passes
-`BASE_PATH=/<repo-name>/` so assets resolve under the project-site subpath. For a user site
-(`<user>.github.io`) drop that env var.
+
+> **Do this first.** In the repo, go to **Settings → Pages → Build and deployment → Source** and
+> pick **GitHub Actions**. Until you do, the workflow fails on `actions/configure-pages` with
+> `Get Pages site failed … Not Found`, because the Pages site does not exist yet. The action can
+> create it via its `enablement` input, but that needs a PAT or GitHub App token — the default
+> `GITHUB_TOKEN` cannot do it.
+
+The workflow passes `BASE_PATH=/<repo-name>/` so assets resolve under the project-site subpath
+(for `samgit126/sami-portfolio` that is `https://samgit126.github.io/sami-portfolio/`). For a user
+site (`<user>.github.io`) drop that env var.
 
 For any other static host: `npm run build` and serve `dist/`.
 

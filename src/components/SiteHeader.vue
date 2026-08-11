@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 import ThemeToggle from './ThemeToggle.vue'
 import { navItems, profile } from '../data/portfolio'
 import { useScrollSpy } from '../composables/useScrollSpy'
+import { asset } from '../utils/asset'
 
 const { activeId } = useScrollSpy(navItems.map((item) => item.id))
 
@@ -93,7 +94,7 @@ onUnmounted(() => {
       <div class="flex items-center gap-2">
         <!-- Always-visible CV download, next to the theme toggle -->
         <a
-          :href="profile.cv"
+          :href="asset(profile.cv)"
           download
           class="group inline-flex h-9 items-center gap-2 border border-line bg-surface px-2.5 text-ink-2 transition-colors hover:border-accent hover:text-accent sm:px-3"
           aria-label="Download CV as PDF"
@@ -169,7 +170,7 @@ onUnmounted(() => {
           </li>
           <li>
             <a
-              :href="profile.cv"
+              :href="asset(profile.cv)"
               download
               class="mt-3 flex items-center justify-center gap-2.5 border border-accent/50 bg-accent-soft px-4 py-3 font-mono text-xs uppercase tracking-[0.16em] text-accent"
               @click="menuOpen = false"

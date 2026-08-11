@@ -4,6 +4,7 @@ import SectionShell from './SectionShell.vue'
 import { vReveal } from '../directives/reveal'
 import ScheduleIllustration from './ScheduleIllustration.vue'
 import { projects, repos } from '../data/portfolio'
+import { asset } from '../utils/asset'
 
 const featured = computed(() => projects.filter((p) => p.featured))
 const lead = computed(() => featured.value[0])
@@ -27,7 +28,7 @@ const rest = computed(() => projects.filter((p) => !p.featured))
     >
       <div class="relative overflow-hidden border-b border-line lg:border-b-0 lg:border-r">
         <img
-          :src="lead.image!"
+          :src="asset(lead.image!)"
           :alt="`${lead.name} screenshot`"
           width="1280"
           height="720"
@@ -133,7 +134,7 @@ const rest = computed(() => projects.filter((p) => !p.featured))
         <div class="overflow-hidden border-b border-line">
           <img
             v-if="project.image"
-            :src="project.image"
+            :src="asset(project.image!)"
             :alt="`${project.name} screenshot`"
             width="1280"
             height="720"
@@ -242,7 +243,7 @@ const rest = computed(() => projects.filter((p) => !p.featured))
         >
           <div class="overflow-hidden border-b border-line">
             <img
-              :src="project.image!"
+              :src="asset(project.image!)"
               :alt="`${project.name} screenshot`"
               width="1280"
               height="720"
