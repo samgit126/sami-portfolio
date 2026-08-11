@@ -1,19 +1,55 @@
-import { ref, watchEffect } from "vue";
+import { ref, watch } from 'vue'
 
-const isDark = ref(
-    localStorage.getItem("theme") === "dark" ||
-        (!localStorage.getItem("theme") &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches),
-);
+export type Theme = 'light' | 'dark'
 
-watchEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark.value);
-    localStorage.setItem("theme", isDark.value ? "dark" : "light");
-});
+const STORAGE_KEY = 'theme'
+
+function systemPrefersDark(): boolean {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
+function readStored(): Theme | null {
+  try {
+    const value = localStorage.getItem(STORAGE_KEY)
+    return value === 'dark' || value === 'light' ? value : null
+  } catch {
+    // Private mode / storage disabled — fall back to system preference.
+    return null
+  }
+}
+
+/** Whether the user has made an explicit choice (vs. following the system). */
+const hasExplicitChoice = ref(readStored() !== null)
+const isDark = ref(readStored() === 'dark' || (!hasExplicitChoice.value && systemPrefersDark()))
+
+function apply(dark: boolean) {
+  document.documentElement.classList.toggle('dark', dark)
+  document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+}
+
+apply(isDark.value)
+
+watch(isDark, (dark) => {
+  apply(dark)
+  if (!hasExplicitChoice.value) return
+  try {
+    localStorage.setItem(STORAGE_KEY, dark ? 'dark' : 'light')
+  } catch {
+    // Ignore — the theme still applies for this session.
+  }
+})
+
+// Keep following the OS until the user picks a side themselves.
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+  if (hasExplicitChoice.value) return
+  isDark.value = event.matches
+})
 
 export function useTheme() {
-    const toggleTheme = () => {
-        isDark.value = !isDark.value;
-    };
-    return { isDark, toggleTheme };
+  function toggleTheme() {
+    hasExplicitChoice.value = true
+    isDark.value = !isDark.value
+  }
+
+  return { isDark, toggleTheme }
 }

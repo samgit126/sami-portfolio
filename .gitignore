@@ -15,6 +15,7 @@ dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 .DS_Store
 *.suo
@@ -22,3 +23,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Source screenshots (~19 MB of PNGs). The optimised WebP versions that the
+# site actually serves live in public/projects/ and ARE committed.
+src/images
+
+# Intermediate CV markup; the generated PDF in public/ is committed
+cv.html
