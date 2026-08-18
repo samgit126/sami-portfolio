@@ -51,6 +51,38 @@ export interface Project {
   featured?: boolean
 }
 
+/**
+ * The three things I am most often asked to demonstrate, each paired with the
+ * system that demonstrates it and a link to open. Written the way I would
+ * explain it in a first conversation, not as a checklist.
+ */
+export interface EvidenceItem {
+  id: string
+  /** The capability itself, in the language a requirement document uses. */
+  capability: string
+  /** What proving it actually demands. */
+  requirement: string
+  project: string
+  role: string
+  href: string | null
+  hrefLabel: string | null
+  /** Specifics a reviewer can check against the live deployment. */
+  proof: string[]
+}
+
+/** A subject area with a system already built in it. */
+export interface DomainItem {
+  id: string
+  domain: string
+  /** Sector label, not an acronym — the work should speak for itself. */
+  tag: string
+  project: string
+  summary: string
+  href: string | null
+  hrefLabel: string | null
+  status: string
+}
+
 export interface Repo {
   name: string
   description: string
@@ -124,28 +156,30 @@ export const profile = {
     'Front-End Team Lead at Qelem Meda Technologies',
     'MSc Software Engineering · 6 years in production',
   ],
+  /* Sits directly under the headline on the site, so it must not repeat it. */
   pitch:
-    'I lead front-end architecture for Haleta, a large-scale ERP platform, turning dense enterprise workflows into fast, accessible interfaces with Vue 3, TypeScript and Tailwind CSS.',
+    'I turn dense enterprise workflows into fast, accessible interfaces with Vue 3, TypeScript and Tailwind CSS — and set the standards the rest of the team builds against.',
   availability: 'Open to front-end architecture & team-lead roles',
 } as const
 
 export const stats = [
-  { value: '6+', label: 'Years shipping production front-ends' },
-  { value: '11', label: 'Products delivered or in build' },
-  { value: '3', label: 'Peer-reviewed papers published' },
-  { value: '3.97', label: 'MSc CGPA, Software Engineering' },
+  { value: '6+', label: 'Years in production' },
+  { value: '11', label: 'Products delivered' },
+  { value: '3', label: 'Papers published' },
+  { value: '3.97', label: 'MSc CGPA' },
 ] as const
 
 export const navItems: NavItem[] = [
   { id: 'about', label: 'About', index: '01' },
   { id: 'skills', label: 'Skills', index: '02' },
   { id: 'experience', label: 'Experience', index: '03' },
-  { id: 'projects', label: 'Projects', index: '04' },
-  { id: 'activity', label: 'Activity', index: '05' },
-  { id: 'publications', label: 'Research', index: '06' },
-  { id: 'teaching', label: 'Teaching', index: '07' },
-  { id: 'education', label: 'Education', index: '08' },
-  { id: 'contact', label: 'Contact', index: '09' },
+  { id: 'evidence', label: 'Evidence', index: '04' },
+  { id: 'projects', label: 'Projects', index: '05' },
+  { id: 'activity', label: 'Activity', index: '06' },
+  { id: 'publications', label: 'Research', index: '07' },
+  { id: 'teaching', label: 'Teaching', index: '08' },
+  { id: 'education', label: 'Education', index: '09' },
+  { id: 'contact', label: 'Contact', index: '10' },
 ]
 
 export const about = {
@@ -281,20 +315,22 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    name: 'University Scheduling System',
+    name: 'Class & Exam Scheduling System',
     role: 'Front-End Developer',
-    href: null,
-    hrefLabel: null,
-    status: 'In development',
+    href: 'https://schedule.hyperagencyet.com/',
+    hrefLabel: 'schedule.hyperagencyet.com',
+    status: 'Live',
     description:
-      'A generic class, exam and invigilation scheduling platform, built to be configured for any academic program or university rather than hard-coded to a single institution.',
+      'An academic scheduling and workload platform deployed for Wollo University: class timetables, room and instructor allocation, conflict detection and exam invigilation. Built to be configured for any academic program rather than hard-coded to one institution.',
     points: [
+      'Timetable planning across rooms and instructors, with automatic conflict detection and generated exam schedules.',
       'Modules for master data, course offerings, scheduling and exam invigilation, behind a server-driven permission model.',
       'Data-heavy dashboards and reports with charting, plus Excel and PDF export.',
       'Bilingual English and Amharic throughout, with light and dark themes.',
       'Vue 3 and TypeScript with Pinia for shared state, wired to a Laravel back end.',
     ],
     capabilities: [
+      'Academic workload & timetabling',
       'SPA architecture',
       'Pinia state management',
       'Data-heavy dashboards',
@@ -303,6 +339,7 @@ export const projects: Project[] = [
     ],
     image: null,
     illustration: 'schedule',
+    imageNote: 'Behind sign-in — see the live link',
     tech: ['Vue.js', 'TypeScript', 'Tailwind CSS', 'Pinia', 'Vue Router', 'Laravel'],
     featured: true,
   },
@@ -313,7 +350,7 @@ export const projects: Project[] = [
     hrefLabel: null,
     status: 'Built, not yet deployed',
     description:
-      'A repository management system for Wollo University covering research documents, student projects and the academic workflows around them, built for seven distinct user roles.',
+      'A research management information system for Wollo University covering research documents, student projects and the academic workflows around them, built for seven distinct user roles.',
     points: [
       'Role-based access control across admin, department head, project coordinator, advisor, student, research office and researcher.',
       'Multi-level approval workflow: submission, review, commenting, feedback and status tracking at every stage.',
@@ -321,6 +358,7 @@ export const projects: Project[] = [
       'Announcements plus a dashboard reporting user statistics, document metrics and activity.',
     ],
     capabilities: [
+      'Research administration',
       'Role-based access control',
       'Approval workflows',
       'Document management',
@@ -465,6 +503,80 @@ export const projects: Project[] = [
  * Personal, academic and open-source work on GitHub — the code that is public,
  * as opposed to the client products above.
  */
+export const evidence: EvidenceItem[] = [
+  {
+    id: 'spa',
+    capability: 'Single-page apps that stay maintainable',
+    requirement:
+      'The hard part is not the first release, it is the twentieth. Module boundaries, a shared component library and conventions a team can actually follow.',
+    project: 'Haleta ERP',
+    role: 'Front-End Team Lead',
+    href: 'https://haleta.qelemmeda.et/',
+    hrefLabel: 'haleta.qelemmeda.et',
+    proof: [
+      'Vue 3 with the Composition API, TypeScript and Tailwind CSS across the whole product.',
+      'I set the front-end architecture and the review process the team works to.',
+      'Inventory, sales, point of sale, stock, reporting and audit all ship from one codebase.',
+    ],
+  },
+  {
+    id: 'accessible',
+    capability: 'Interfaces that work for everyone',
+    requirement:
+      'Public-facing work has to hold up on a cheap phone and a slow connection, and stay usable for people navigating by keyboard or screen reader.',
+    project: 'Ethiopian Public Service University',
+    role: 'Front-End Developer (volunteer)',
+    href: 'http://www.epsu.edu.et/',
+    hrefLabel: 'epsu.edu.et',
+    proof: [
+      'Built phone-first for students, staff and applicants across a wide range of devices.',
+      'Keyboard access, heading structure and contrast handled while building, not patched afterwards.',
+      'Content managed by university staff without a developer in the loop.',
+    ],
+  },
+  {
+    id: 'dashboards',
+    capability: 'Dense, data-first screens',
+    requirement:
+      'Tables, filters, charts and exports over real institutional data, with the state behind them staying predictable as the number of views grows.',
+    project: 'Class & Exam Scheduling System',
+    role: 'Front-End Developer',
+    href: 'https://schedule.hyperagencyet.com/',
+    hrefLabel: 'schedule.hyperagencyet.com',
+    proof: [
+      'Timetable, room and instructor planning with conflict detection over a full academic calendar.',
+      'Pinia stores keep scheduling state shared across modules without the views slowing down.',
+      'Charted reporting with Excel and PDF export, bilingual in English and Amharic.',
+    ],
+  },
+]
+
+/** Systems I have already built inside Ethiopian universities. */
+export const domains: DomainItem[] = [
+  {
+    id: 'research',
+    domain: 'Research administration & approval workflows',
+    tag: 'Higher education',
+    project: 'Wollo University Research Repository',
+    summary:
+      'Research documents, student projects and everything that has to happen around them, across seven roles: admin, department head, project coordinator, advisor, student, research office and researcher. Submission, review, commenting and status tracking at each stage, with document version control and a reporting dashboard.',
+    href: null,
+    hrefLabel: null,
+    status: 'Built, not yet deployed',
+  },
+  {
+    id: 'scheduling',
+    domain: 'Academic scheduling & staff workload',
+    tag: 'Higher education',
+    project: 'Class & Exam Scheduling System',
+    summary:
+      'Class timetables, room and instructor allocation, teaching load distribution, conflict detection and exam invigilation. Deployed for Wollo University and configurable for any academic program.',
+    href: 'https://schedule.hyperagencyet.com/',
+    hrefLabel: 'schedule.hyperagencyet.com',
+    status: 'Live',
+  },
+]
+
 export const repos: Repo[] = [
   {
     name: 'Student Internship Management System',

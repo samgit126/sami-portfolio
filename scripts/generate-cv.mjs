@@ -27,6 +27,8 @@ const {
   skillGroups,
   experience,
   projects,
+  evidence,
+  domains,
   teaching,
   publications,
   education,
@@ -35,7 +37,8 @@ const {
   contributions,
 } = await import(resolve(root, 'src/data/portfolio.ts'))
 
-const SITE_URL = process.env.SITE_URL ?? ''
+// The live portfolio, printed in the contact line. Override with SITE_URL=…
+const SITE_URL = process.env.SITE_URL ?? 'https://sami-portfolio-gamma.vercel.app'
 
 const esc = (v) =>
   String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -68,7 +71,7 @@ const contacts = [
   byId.linkedin && link(byId.linkedin.href, 'linkedin.com/in/samuel-temesgen'),
   byId.github && link(byId.github.href, byId.github.value),
   byId.gitlab && link(byId.gitlab.href, byId.gitlab.value),
-  SITE_URL && link(SITE_URL, SITE_URL.replace(/^https?:\/\//, '')),
+  SITE_URL && link(SITE_URL, SITE_URL.replace(/^https?:\/\/(www\.)?/, '')),
 ].filter(Boolean)
 
 const section = (title, body, cls = '') =>
@@ -152,6 +155,34 @@ const othersBlock = `<table class="compact"><tbody>${others
       <td>${esc(p.description)}<br /><span class="tech">${p.tech
         .map(esc)
         .join(', ')}</span></td>
+    </tr>`,
+  )
+  .join('')}</tbody></table>`
+
+const evidenceBlock = `<table class="compact evidence"><tbody>${evidence
+  .map(
+    (e) => `<tr>
+      <th>${esc(e.capability)}</th>
+      <td>
+        <strong>${esc(e.project)}</strong> — ${esc(e.role)}${
+          e.href ? `<br /><span class="url">${link(e.href, e.hrefLabel)}</span>` : ''
+        }
+        <ul class="tight">${e.proof.map((pt) => `<li>${esc(pt)}</li>`).join('')}</ul>
+      </td>
+    </tr>`,
+  )
+  .join('')}</tbody></table>`
+
+const domainsBlock = `<table class="compact"><tbody>${domains
+  .map(
+    (d) => `<tr>
+      <th>${esc(d.domain)}<br /><span class="tech">${esc(d.status)}</span></th>
+      <td>
+        <strong>${esc(d.project)}</strong>${
+          d.href ? ` &nbsp;•&nbsp; <span class="url">${link(d.href, d.hrefLabel)}</span>` : ''
+        }
+        <br />${esc(d.summary)}
+      </td>
     </tr>`,
   )
   .join('')}</tbody></table>`
@@ -277,6 +308,9 @@ const html = `<!doctype html>
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--brand);
+    /* Never let a heading sit alone at the foot of a page */
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   .lead { margin: 0; }
@@ -329,6 +363,9 @@ const html = `<!doctype html>
   .pubs { margin: 0; padding-left: 16px; }
   .pubs li { margin-bottom: 3px; break-inside: avoid; }
   .pubs .pub { color: var(--brand); font-weight: 500; }
+  .evidence th { width: 32%; color: var(--ink); }
+  ul.tight { margin: 3px 0 0; padding-left: 14px; }
+  ul.tight li { margin-bottom: 1px; }
   .certs { margin: 0; padding-left: 16px; }
   .certs li { margin-bottom: 2px; }
 
@@ -357,6 +394,8 @@ const html = `<!doctype html>
      <p>${esc(about.paragraphs[0])}</p>`,
   )}
 
+  ${section('Selected work in production', evidenceBlock)}
+  ${section('University systems delivered', domainsBlock)}
   ${section('Technical skills', skillsBlock)}
   ${section('Professional experience', experienceBlock)}
   ${section('Teaching experience', teachingBlock)}

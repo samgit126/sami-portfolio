@@ -1,63 +1,60 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 
 /**
- * Tracks which section id is currently in view so the header nav can mark it.
- * Picks the entry closest to the top of the viewport rather than the largest
- * one, which keeps short sections from being skipped.
+ * Tracks which section is currently in view so the rail nav can mark it.
+ *
+ * Measured on a rAF-throttled scroll rather than with an IntersectionObserver:
+ * an observer reports threshold *crossings*, so a single large jump — an anchor
+ * link, Page Down — can leave the marker on a section that scrolled by long
+ * ago. Re-measuring from scroll position is always right, whatever the jump.
+ *
+ * The active section is the last one whose top edge has passed `offset`.
  */
-export function useScrollSpy(ids: string[], offset = 96) {
-  // Starts empty: while the hero is in view no nav item should read as current.
+export function useScrollSpy(ids: string[], offset = 140) {
+  // Starts empty: while the intro is in view no nav item should read as current.
   const activeId = ref<string>('')
-  let observer: IntersectionObserver | null = null
-  const visible = new Map<string, number>()
+  let frame = 0
 
-  function pickActive() {
-    if (visible.size === 0) {
-      activeId.value = ''
-      return
-    }
-
+  function measure() {
+    frame = 0
     let best = ''
-    let bestTop = Number.POSITIVE_INFINITY
+    let bestTop = Number.NEGATIVE_INFINITY
 
     for (const id of ids) {
-      if (!visible.has(id)) continue
-      const top = visible.get(id) ?? 0
-      const distance = Math.abs(top)
-      if (distance < bestTop) {
-        bestTop = distance
+      const el = document.getElementById(id)
+      if (!el) continue
+
+      const top = el.getBoundingClientRect().top - offset
+      if (top <= 0 && top > bestTop) {
+        bestTop = top
         best = id
       }
     }
 
-    if (best) activeId.value = best
+    // The last section is often too short to ever reach the offset line, so
+    // hand it the marker once the page cannot scroll any further.
+    const doc = document.documentElement
+    if (window.scrollY + window.innerHeight >= doc.scrollHeight - 4) {
+      best = ids[ids.length - 1] ?? best
+    }
+
+    activeId.value = best
+  }
+
+  function schedule() {
+    if (!frame) frame = requestAnimationFrame(measure)
   }
 
   onMounted(() => {
-    observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = entry.target.id
-          if (entry.isIntersecting) {
-            visible.set(id, entry.boundingClientRect.top - offset)
-          } else {
-            visible.delete(id)
-          }
-        }
-        pickActive()
-      },
-      { rootMargin: `-${offset}px 0px -55% 0px`, threshold: [0, 0.25, 0.5] },
-    )
-
-    for (const id of ids) {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    }
+    measure()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule, { passive: true })
   })
 
   onUnmounted(() => {
-    observer?.disconnect()
-    observer = null
+    cancelAnimationFrame(frame)
+    window.removeEventListener('scroll', schedule)
+    window.removeEventListener('resize', schedule)
   })
 
   return { activeId }

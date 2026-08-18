@@ -1,42 +1,40 @@
 import type { Directive } from 'vue'
+import { onInView } from '../utils/inview'
+
+type RevealEl = HTMLElement & { _revealCancel?: () => void }
 
 /**
- * `v-reveal` — fades an element up once as it enters the viewport, then stops
- * observing. A numeric arg staggers it: `v-reveal:2` waits 2 × 70ms.
+ * `v-reveal` — fades an element up (and un-blurs it) once it reaches the
+ * viewport.
+ *
+ *   v-reveal          plain fade-up
+ *   v-reveal:3        staggered — waits 3 × 80ms
+ *   v-reveal.left     slides in from the left instead of from below
+ *   v-reveal.right    slides in from the right
+ *
  * Under `prefers-reduced-motion` the element is simply shown as-is.
  */
-export const vReveal: Directive<HTMLElement, void> = {
+export const vReveal: Directive<RevealEl, void> = {
   mounted(el, binding) {
     if (
       typeof window === 'undefined' ||
-      !('IntersectionObserver' in window) ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
       return
     }
 
     const step = Number(binding.arg ?? 0)
-    el.style.transitionDelay = step > 0 ? `${Math.min(step, 10) * 70}ms` : ''
+    el.style.transitionDelay = step > 0 ? `${Math.min(step, 12) * 80}ms` : ''
+
     el.classList.add('reveal-init')
+    if (binding.modifiers.left) el.classList.add('reveal-init-left')
+    if (binding.modifiers.right) el.classList.add('reveal-init-right')
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          el.classList.add('reveal-in')
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
-    )
-
-    observer.observe(el)
-    ;(el as HTMLElement & { _revealObserver?: IntersectionObserver })._revealObserver = observer
+    el._revealCancel = onInView(el, () => el.classList.add('reveal-in'))
   },
 
   unmounted(el) {
-    const target = el as HTMLElement & { _revealObserver?: IntersectionObserver }
-    target._revealObserver?.disconnect()
-    delete target._revealObserver
+    el._revealCancel?.()
+    delete el._revealCancel
   },
 }

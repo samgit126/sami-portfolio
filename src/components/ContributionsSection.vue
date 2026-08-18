@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import SectionShell from './SectionShell.vue'
 import { vReveal } from '../directives/reveal'
+import { vSpotlight } from '../directives/spotlight'
+import StatCounter from './StatCounter.vue'
 import { contributions } from '../data/portfolio'
 import { asset } from '../utils/asset'
 </script>
@@ -8,66 +10,47 @@ import { asset } from '../utils/asset'
 <template>
   <SectionShell
     id="activity"
-    index="05"
+    index="06"
     eyebrow="Activity"
     title="Where the commits live"
     intro="Public work sits on GitHub. Most of my day-to-day output is on the company GitLab in private repositories, so the contribution graph stands in for code you can't browse."
   >
-    <div class="grid gap-5 lg:grid-cols-2">
+    <div class="grid gap-5 xl:grid-cols-2">
       <article
         v-for="(source, i) in contributions"
         :key="source.id"
         v-reveal:[i]
-        class="panel flex min-w-0 flex-col p-6 sm:p-7"
+        v-spotlight
+        class="card spotlight card-hover flex min-w-0 flex-col p-6 sm:p-8"
       >
         <!-- Platform header -->
         <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
           <div>
-            <h3 class="font-display text-xl font-medium tracking-tight text-ink">
+            <h3 class="font-display text-xl font-semibold tracking-tight text-ink">
               {{ source.platform }}
             </h3>
-            <p class="label mt-2 text-accent">{{ source.handle }}</p>
+            <p class="mt-2 text-sm font-medium text-accent">{{ source.handle }}</p>
           </div>
 
-          <span class="label border border-line px-2.5 py-1.5 text-ink-3">
-            {{ source.visibility }}
-          </span>
+          <span class="chip">{{ source.visibility }}</span>
         </div>
 
         <!-- Contribution graph, or the slot waiting for one -->
-        <figure class="relative mt-6">
-          <span
-            aria-hidden="true"
-            class="absolute -left-px -top-px h-2.5 w-2.5 border-l border-t border-accent/70"
-          />
-          <span
-            aria-hidden="true"
-            class="absolute -right-px -top-px h-2.5 w-2.5 border-r border-t border-accent/70"
-          />
-          <span
-            aria-hidden="true"
-            class="absolute -bottom-px -left-px h-2.5 w-2.5 border-b border-l border-accent/70"
-          />
-          <span
-            aria-hidden="true"
-            class="absolute -bottom-px -right-px h-2.5 w-2.5 border-b border-r border-accent/70"
-          />
-
+        <figure class="skeleton relative mt-6 overflow-hidden rounded-2xl border border-line">
           <img
             v-if="source.image"
             :src="asset(source.image!)"
             :alt="source.imageAlt"
             width="1280"
             height="320"
-            loading="lazy"
             decoding="async"
-            class="w-full border border-line bg-surface-2 object-cover"
+            class="w-full bg-surface-2 object-cover"
           />
 
           <!-- Empty state: shows exactly where to drop the screenshot -->
           <div
             v-else
-            class="blueprint flex min-h-40 flex-col items-center justify-center gap-3 border border-dashed border-line-strong bg-surface-2/50 px-5 py-10 text-center"
+            class="dotfield flex min-h-40 flex-col items-center justify-center gap-3 bg-surface-2/60 px-5 py-10 text-center"
           >
             <svg
               viewBox="0 0 24 24"
@@ -98,25 +81,24 @@ import { asset } from '../utils/asset'
 
         <p class="mt-6 mb-6 text-sm leading-relaxed text-ink-2">{{ source.note }}</p>
 
-        <!-- Figures. Pushed to the bottom so both panels' stat rows align even
+        <!-- Figures. Pushed to the bottom so both cards' stat rows align even
              when the notes above them differ in length. -->
-        <dl class="mt-auto grid grid-cols-3 gap-px border border-line bg-line">
-          <div v-for="stat in source.stats" :key="stat.label" class="bg-bg p-3.5">
-            <dt class="sr-only">{{ stat.label }}</dt>
-            <dd>
-              <span class="block font-display text-lg font-medium tracking-tight text-ink">
-                {{ stat.value }}
-              </span>
-              <span class="mt-1 block text-xs leading-snug text-ink-3">{{ stat.label }}</span>
-            </dd>
-          </div>
+        <dl class="mt-auto grid grid-cols-3 gap-3">
+          <StatCounter
+            v-for="stat in source.stats"
+            :key="stat.label"
+            :value="stat.value"
+            :label="stat.label"
+            size="md"
+            class="rounded-2xl border border-line bg-surface-2/60 p-4"
+          />
         </dl>
 
         <a
           :href="source.href"
           target="_blank"
           rel="noopener noreferrer"
-          class="label mt-6 inline-flex items-center gap-2 self-start text-ink-3 transition-colors hover:text-accent"
+          class="btn btn-outline mt-6 self-start"
         >
           Visit profile
           <span aria-hidden="true">↗</span>

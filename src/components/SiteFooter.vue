@@ -7,47 +7,39 @@ const links = contactChannels.filter((channel) => channel.external)
 </script>
 
 <template>
-  <footer class="border-t border-line py-10">
+  <footer class="relative px-5 pb-12 pt-10 sm:px-8 lg:px-0">
     <div
-      class="mx-auto flex max-w-6xl flex-col gap-6 px-5 sm:flex-row sm:items-center sm:justify-between sm:px-8"
-    >
+      aria-hidden="true"
+      class="absolute inset-x-5 top-0 h-px sm:inset-x-8 lg:inset-x-0"
+      style="background: linear-gradient(90deg, var(--line-strong), transparent 85%)"
+    />
+
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p class="font-display text-sm font-medium tracking-tight text-ink">
+        <p class="font-display text-sm font-semibold tracking-tight text-ink">
           {{ profile.name }}
         </p>
-        <p class="label mt-2 text-ink-3">
-          {{ profile.role }} · {{ profile.location }}
-        </p>
+        <p class="mt-1.5 text-xs text-ink-3">{{ profile.role }} · {{ profile.location }}</p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+      <div class="flex flex-wrap items-center gap-2">
         <a
           v-for="link in links"
           :key="link.id"
           :href="link.href"
           target="_blank"
           rel="noopener noreferrer"
-          class="label text-ink-3 transition-colors hover:text-accent"
+          class="chip"
         >
           {{ link.label }}
         </a>
-        <a
-          :href="asset(profile.cv)"
-          download
-          class="label text-ink-3 transition-colors hover:text-accent"
-        >
-          Download CV ↓
-        </a>
-        <a href="#top" class="label text-ink-3 transition-colors hover:text-accent">
-          Back to top ↑
-        </a>
+        <a :href="asset(profile.cv)" download class="chip">CV ↓</a>
+        <a href="#top" class="chip">Top ↑</a>
       </div>
     </div>
 
-    <div class="mx-auto mt-8 max-w-6xl px-5 sm:px-8">
-      <p class="label border-t border-line pt-6 text-ink-3">
-        © {{ year }} · Built with Vue 3, TypeScript &amp; Tailwind CSS
-      </p>
-    </div>
+    <p class="mt-8 text-xs text-ink-3">
+      © {{ year }} · Built with Vue 3, TypeScript &amp; Tailwind CSS
+    </p>
   </footer>
 </template>

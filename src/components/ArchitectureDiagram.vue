@@ -93,29 +93,18 @@ const links = computed(() =>
 </script>
 
 <template>
-  <figure class="relative m-0">
-    <!-- Registration ticks around the drawing, like a plotted sheet -->
+  <figure class="card relative m-0 overflow-hidden">
+    <!-- Faint brand wash so the diagram sits on its own plate -->
     <span
       aria-hidden="true"
-      class="absolute -left-px -top-px h-3 w-3 border-l border-t border-accent/70"
-    />
-    <span
-      aria-hidden="true"
-      class="absolute -right-px -top-px h-3 w-3 border-r border-t border-accent/70"
-    />
-    <span
-      aria-hidden="true"
-      class="absolute -bottom-px -left-px h-3 w-3 border-b border-l border-accent/70"
-    />
-    <span
-      aria-hidden="true"
-      class="absolute -bottom-px -right-px h-3 w-3 border-b border-r border-accent/70"
+      class="orb animate-float-slower -right-20 -top-20 h-56 w-56"
+      style="background: radial-gradient(circle, var(--brand) 0%, transparent 70%); opacity: 0.18"
     />
 
-    <div class="border border-line bg-surface/40 px-4 pb-4 pt-3 backdrop-blur-sm sm:px-6 sm:pb-6">
-      <div class="mb-3 flex items-baseline justify-between border-b border-line pb-2">
+    <div class="relative px-4 pb-4 pt-3 sm:px-6 sm:pb-6">
+      <div class="mb-4 flex items-center justify-between border-b border-line pb-3">
         <span class="label text-ink-3">Fig. 01 · Front-end stack</span>
-        <span class="label text-accent">Haleta</span>
+        <span class="chip chip-accent py-1">Haleta</span>
       </div>
 
       <svg
@@ -198,7 +187,7 @@ const links = computed(() =>
               :y="node.y - 6"
               :width="node.w + 12"
               :height="NODE_H + 12"
-              rx="4"
+              rx="10"
               class="fill-current text-accent"
               style="animation: hub-breathe 3.6s ease-in-out infinite"
             />
@@ -207,7 +196,7 @@ const links = computed(() =>
               :y="node.y"
               :width="node.w"
               :height="NODE_H"
-              rx="3"
+              rx="8"
               class="fill-current"
               :class="node.hub ? 'text-accent' : 'text-surface'"
             />
@@ -216,7 +205,7 @@ const links = computed(() =>
               :y="node.y"
               :width="node.w"
               :height="NODE_H"
-              rx="3"
+              rx="8"
               fill="none"
               stroke="currentColor"
               stroke-width="1"

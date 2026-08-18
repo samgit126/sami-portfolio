@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import SectionShell from './SectionShell.vue'
 import { vReveal } from '../directives/reveal'
+import { vSpotlight } from '../directives/spotlight'
+import { vMagnetic } from '../directives/magnetic'
 import { contactChannels, profile } from '../data/portfolio'
 import { asset } from '../utils/asset'
 
@@ -23,17 +25,18 @@ async function copy(id: string, value: string) {
 <template>
   <SectionShell
     id="contact"
-    index="09"
+    index="10"
     eyebrow="Contact"
     title="Let's build something"
     :intro="`${profile.availability}. The fastest way to reach me is email, and I read everything.`"
   >
-    <div class="grid gap-px border border-line bg-line sm:grid-cols-2">
+    <div class="grid gap-5 sm:grid-cols-2">
       <div
         v-for="(channel, i) in contactChannels"
         :key="channel.id"
         v-reveal:[i]
-        class="group relative flex items-center justify-between gap-4 bg-bg p-6 transition-colors hover:bg-surface-2 sm:p-7"
+        v-spotlight
+        class="card spotlight card-hover group relative flex items-center justify-between gap-4 p-6"
       >
         <div class="min-w-0">
           <p class="label text-ink-3">{{ channel.label }}</p>
@@ -41,7 +44,7 @@ async function copy(id: string, value: string) {
             :href="channel.href"
             :target="channel.external ? '_blank' : undefined"
             :rel="channel.external ? 'noopener noreferrer' : undefined"
-            class="mt-3 block truncate font-display text-base font-medium tracking-tight text-ink transition-colors hover:text-accent sm:text-lg"
+            class="mt-3 block truncate font-display text-base font-semibold tracking-tight text-ink transition-colors hover:text-accent sm:text-lg"
           >
             {{ channel.value }}
           </a>
@@ -50,7 +53,7 @@ async function copy(id: string, value: string) {
         <button
           v-if="channel.copyable"
           type="button"
-          class="shrink-0 border border-line px-2.5 py-2 text-ink-3 transition-colors hover:border-accent hover:text-accent"
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line text-ink-3 transition-all duration-300 hover:border-accent hover:bg-accent-soft hover:text-accent"
           :aria-label="`Copy ${channel.label.toLowerCase()} to clipboard`"
           @click="copy(channel.id, channel.value)"
         >
@@ -91,7 +94,7 @@ async function copy(id: string, value: string) {
           stroke-width="1.7"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="h-4 w-4 shrink-0 text-ink-3 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+          class="h-4 w-4 shrink-0 text-ink-3 transition-all duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
           aria-hidden="true"
         >
           <path d="M7 17 17 7M8 7h9v9" />
@@ -103,59 +106,69 @@ async function copy(id: string, value: string) {
       {{ copiedId ? 'Copied to clipboard' : '' }}
     </p>
 
-    <div
-      v-reveal:2
-      class="panel mt-10 flex flex-col items-start justify-between gap-6 p-7 sm:flex-row sm:items-center sm:p-8"
-    >
-      <div>
-        <p class="font-display text-xl font-medium tracking-tight text-ink sm:text-2xl">
-          Have a front-end that needs an owner?
-        </p>
-        <p class="mt-2.5 max-w-lg text-sm leading-relaxed text-ink-2">
-          Architecture reviews, Vue 3 migrations, design-system work, or leading a front-end team.
-          Happy to talk through any of it.
-        </p>
-      </div>
+    <!-- Closing call to action, on a gradient plate -->
+    <div v-reveal:2 class="card relative mt-8 overflow-hidden p-8 sm:p-10">
+      <span
+        aria-hidden="true"
+        class="absolute inset-0 opacity-[0.07]"
+        style="background-image: linear-gradient(120deg, var(--brand), var(--brand-2), var(--brand-3))"
+      />
+      <span
+        aria-hidden="true"
+        class="orb animate-float-slow -right-24 -top-24 h-72 w-72"
+        style="background: radial-gradient(circle, var(--brand-3) 0%, transparent 70%); opacity: 0.28"
+      />
 
-      <div class="flex shrink-0 flex-wrap items-center gap-3">
-      <a
-        :href="`mailto:${contactChannels[0].value}`"
-        class="group inline-flex shrink-0 items-center gap-2.5 bg-ink px-5 py-3 font-mono text-xs uppercase tracking-[0.16em] text-bg transition-opacity hover:opacity-90"
+      <div
+        class="relative flex flex-col items-start justify-between gap-7 sm:flex-row sm:items-center"
       >
-        Email me
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
-          aria-hidden="true"
-        >
-          <path d="M5 12h13M12 5l7 7-7 7" />
-        </svg>
-      </a>
+        <div>
+          <p class="font-display text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+            Have a front-end that needs an owner?
+          </p>
+          <p class="mt-3 max-w-lg text-sm leading-relaxed text-ink-2">
+            Architecture reviews, Vue 3 migrations, design-system work, or leading a front-end team.
+            Happy to talk through any of it.
+          </p>
+        </div>
 
-      <a
-        :href="asset(profile.cv)"
-        download
-        class="group inline-flex shrink-0 items-center gap-2.5 border border-line-strong px-5 py-3 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors hover:border-accent hover:text-accent"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.7"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-y-0.5"
-          aria-hidden="true"
-        >
-          <path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" />
-        </svg>
-        Download CV
-      </a>
+        <div class="flex shrink-0 flex-wrap items-center gap-3">
+          <a
+            v-magnetic="10"
+            :href="`mailto:${contactChannels[0].value}`"
+            class="btn btn-primary group"
+          >
+            Email me
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              <path d="M5 12h13M12 5l7 7-7 7" />
+            </svg>
+          </a>
+
+          <a :href="asset(profile.cv)" download class="btn btn-outline group">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5"
+              aria-hidden="true"
+            >
+              <path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" />
+            </svg>
+            Download CV
+          </a>
+        </div>
       </div>
     </div>
   </SectionShell>

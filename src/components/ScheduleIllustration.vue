@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Stand-in artwork for the scheduling platform, which has no public deployment
- * to screenshot. Drawn in the site's own blueprint language so it reads as a
+ * to screenshot. Drawn in the site's own visual language so it reads as a
  * deliberate illustration rather than a missing image, and built from theme
  * tokens so it flips with light/dark like everything else.
  */
