@@ -137,7 +137,7 @@ const links = computed(() =>
           v-if="!prefersReducedMotion"
           fill="none"
           stroke="currentColor"
-          class="text-accent/45"
+          class="text-accent/45 print:hidden"
           aria-hidden="true"
         >
           <path
@@ -228,7 +228,7 @@ const links = computed(() =>
         </g>
 
         <!-- Data pulses travelling the traces -->
-        <g v-if="!prefersReducedMotion" aria-hidden="true">
+        <g v-if="!prefersReducedMotion" class="print:hidden" aria-hidden="true">
           <circle
             v-for="link in links"
             :key="`pulse-${link.id}`"

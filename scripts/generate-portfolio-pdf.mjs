@@ -3,12 +3,13 @@
  *
  *   npm run portfolio:pdf
  *
- * Builds the site, serves dist/ over a throwaway local server (a Vue SPA
- * cannot run from file://), then prints it with headless Chrome. The layout
+ * Serves dist/ over a throwaway local server (a Vue SPA cannot run from
+ * file://), then prints it with headless Chrome. The npm script builds
+ * first, so run it that way rather than calling this file directly. Layout
  * comes from the @media print block in src/style.css: light palette, every
  * scroll-reveal shown, the sticky rail flattened into a normal block.
  */
-import { execFileSync } from 'node:child_process'
+import { execFile, execFileSync } from 'node:child_process'
 import { createReadStream, existsSync, mkdirSync, statSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { dirname, extname, join, resolve } from 'node:path'
@@ -47,8 +48,10 @@ if (!CHROME) {
   process.exit(1)
 }
 
-console.log('building…')
-execFileSync('npm', ['run', 'build'], { cwd: root, stdio: 'pipe' })
+if (!existsSync(resolve(dist, 'index.html'))) {
+  console.error('dist/ is empty — run `npm run build` first.')
+  process.exit(1)
+}
 
 const server = createServer((req, res) => {
   const path = decodeURIComponent((req.url ?? '/').split('?')[0])
@@ -66,15 +69,23 @@ const { port } = server.address()
 
 mkdirSync(dirname(out), { recursive: true })
 
+/**
+ * Chrome has to run asynchronously: execFileSync would block this process's
+ * event loop, and the static server above would never accept the connection.
+ */
+function print(args) {
+  return new Promise((ok, fail) => {
+    execFile(CHROME, args, { timeout: 120_000 }, (err) => (err ? fail(err) : ok()))
+  })
+}
+
 try {
-  execFileSync(
-    CHROME,
+  await print(
     [
       '--headless=new',
       '--disable-gpu',
       '--no-sandbox',
       '--no-pdf-header-footer',
-      '--run-all-compositor-stages-before-draw',
       // Enough for fonts, 13 images and the SVG diagram to settle. The print
       // stylesheet stops all animation, so nothing keeps the clock running.
       '--virtual-time-budget=15000',
@@ -82,9 +93,10 @@ try {
       `--print-to-pdf=${out}`,
       `http://127.0.0.1:${port}/`,
     ],
-    { stdio: 'pipe' },
   )
   console.log('wrote', out)
 } finally {
+  // Chrome leaves keep-alive sockets behind; drop them so node can exit.
+  server.closeAllConnections?.()
   server.close()
 }

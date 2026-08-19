@@ -26,7 +26,7 @@ import { profile, stats } from '../data/portfolio'
       {{ profile.pitch }}
     </p>
 
-    <div class="animate-rise mt-7 flex flex-wrap items-center gap-3" style="--i: 3">
+    <div class="animate-rise mt-7 flex flex-wrap items-center gap-3 print:hidden" style="--i: 3">
       <a v-magnetic="10" href="#projects" class="btn btn-primary group">
         View projects
         <svg
@@ -61,7 +61,7 @@ import { profile, stats } from '../data/portfolio'
       />
     </dl>
 
-    <div class="animate-rise mt-8 max-w-2xl" style="--i: 5">
+    <div class="animate-rise mt-8 max-w-2xl print:mt-4 print:max-w-sm" style="--i: 5">
       <ArchitectureDiagram />
     </div>
   </section>

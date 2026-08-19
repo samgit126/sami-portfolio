@@ -706,6 +706,15 @@
     padding-bottom: 14px !important;
   }
 
+  /* background-clip:text does not survive printing — it comes out as a filled
+     rectangle. Fall back to a solid accent colour instead. */
+  .gradient-text {
+    background: none !important;
+    background-image: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: var(--accent) !important;
+  }
+
   /* Links are underlined by the browser already; keep the URL colour readable */
   a {
     color: var(--accent);

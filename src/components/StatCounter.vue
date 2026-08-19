@@ -21,7 +21,9 @@ onMounted(() => observe(root.value))
         class="block font-display font-semibold tracking-tight tabular-nums text-ink"
         :class="size === 'lg' ? 'text-3xl sm:text-4xl' : 'text-xl'"
       >
-        {{ display }}
+        <!-- The count-up only runs on screen; paper gets the final figure. -->
+        <span class="print:hidden">{{ display }}</span>
+        <span class="hidden print:inline">{{ value }}</span>
       </span>
       <span class="mt-2 block text-xs leading-snug text-ink-3">{{ label }}</span>
     </dd>

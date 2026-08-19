@@ -148,7 +148,7 @@ const socials = contactChannels.filter((channel) => channel.external)
         </a>
       </div>
 
-      <div class="mt-3 flex items-center gap-2">
+      <div class="mt-3 flex items-center gap-2 print:hidden">
         <a :href="asset(profile.cv)" download class="btn btn-primary group flex-1 lg:flex-none">
           <svg
             viewBox="0 0 24 24"
