@@ -82,6 +82,16 @@ import { domains, evidence } from '../data/portfolio'
               </li>
             </ul>
 
+            <div
+              v-if="item.outcome"
+              class="mt-5 flex items-baseline gap-3 rounded-xl border border-line bg-surface px-4 py-3"
+            >
+              <span class="gradient-text font-display text-2xl font-semibold tracking-tight tabular-nums">
+                {{ item.outcome.value }}
+              </span>
+              <span class="text-sm leading-snug text-ink-2">{{ item.outcome.label }}</span>
+            </div>
+
             <a
               v-if="item.href"
               :href="item.href"

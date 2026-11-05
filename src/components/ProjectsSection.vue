@@ -270,13 +270,15 @@ const rest = computed(() => projects.filter((p) => !p.featured))
           <div class="flex flex-1 flex-col p-5">
             <h4 class="font-display text-base font-semibold leading-snug tracking-tight text-ink">
               <a
-                :href="project.href!"
+                v-if="project.href"
+                :href="project.href"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="transition-colors group-hover:text-accent"
               >
                 {{ project.name }}<span class="absolute inset-0" aria-hidden="true" />
               </a>
+              <template v-else>{{ project.name }}</template>
             </h4>
 
             <p class="mt-2 text-xs font-medium text-accent">{{ project.role }}</p>
@@ -286,7 +288,10 @@ const rest = computed(() => projects.filter((p) => !p.featured))
               {{ project.capabilities.join(' · ') }}
             </p>
 
-            <p class="mt-5 flex items-center gap-2 font-mono text-[11px] text-ink-3">
+            <p
+              v-if="project.hrefLabel"
+              class="mt-5 flex items-center gap-2 font-mono text-[11px] text-ink-3"
+            >
               <span class="truncate">{{ project.hrefLabel }}</span>
               <span
                 class="transition-transform duration-300 group-hover:translate-x-0.5"
@@ -295,6 +300,7 @@ const rest = computed(() => projects.filter((p) => !p.featured))
                 ↗
               </span>
             </p>
+            <p v-else class="mt-5 font-mono text-[11px] text-ink-3">{{ project.status }}</p>
           </div>
         </article>
       </div>

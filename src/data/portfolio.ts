@@ -68,6 +68,11 @@ export interface EvidenceItem {
   hrefLabel: string | null
   /** Specifics a reviewer can check against the live deployment. */
   proof: string[]
+  /**
+   * One measured result, stated by the client or taken from the system
+   * itself. Rendered only when present; never estimate one to fill the slot.
+   */
+  outcome?: { value: string; label: string }
 }
 
 /** A subject area with a system already built in it. */
@@ -157,6 +162,22 @@ export interface Service {
   price: string
   /** Live project that shows this kind of work already done. */
   proof: { label: string; href: string }
+}
+
+/**
+ * Words from a client, verbatim and with their permission. The section that
+ * renders these stays hidden while the list is empty, so nothing here is ever
+ * paraphrased or invented to fill space.
+ */
+export interface Testimonial {
+  id: string
+  quote: string
+  name: string
+  role: string
+  organisation: string
+  /** Project the quote is about, so it can sit next to the matching proof. */
+  project: string
+  href?: string
 }
 
 export const profile = {
@@ -337,9 +358,9 @@ export const projects: Project[] = [
   {
     name: 'Class & Exam Scheduling System',
     role: 'Front-End Developer',
-    href: 'https://schedule.hyperagencyet.com/',
-    hrefLabel: 'schedule.hyperagencyet.com',
-    status: 'Live',
+    href: null,
+    hrefLabel: null,
+    status: 'Deployed · public URL offline, walkthrough on request',
     description:
       'An academic scheduling and workload platform deployed for Wollo University: class timetables, room and instructor allocation, conflict detection and exam invigilation. Built to be configured for any academic program rather than hard-coded to one institution.',
     points: [
@@ -476,9 +497,9 @@ export const projects: Project[] = [
   {
     name: 'Hyper Agency',
     role: 'Front-End Developer',
-    href: 'https://www.hyperagencyet.com/',
-    hrefLabel: 'hyperagencyet.com',
-    status: 'Live',
+    href: null,
+    hrefLabel: null,
+    status: 'Delivered · site currently offline',
     description: 'Corporate agency website with a modern, component-driven interface.',
     points: [
       'Developed responsive UI components and the site’s visual system.',
@@ -561,12 +582,13 @@ export const evidence: EvidenceItem[] = [
       'Tables, filters, charts and exports over real institutional data, with the state behind them staying predictable as the number of views grows.',
     project: 'Class & Exam Scheduling System',
     role: 'Front-End Developer',
-    href: 'https://schedule.hyperagencyet.com/',
-    hrefLabel: 'schedule.hyperagencyet.com',
+    href: null,
+    hrefLabel: null,
     proof: [
       'Timetable, room and instructor planning with conflict detection over a full academic calendar.',
       'Pinia stores keep scheduling state shared across modules without the views slowing down.',
       'Charted reporting with Excel and PDF export, bilingual in English and Amharic.',
+      'The public deployment is currently offline; a recorded or live walkthrough is available on request.',
     ],
   },
 ]
@@ -591,9 +613,9 @@ export const domains: DomainItem[] = [
     project: 'Class & Exam Scheduling System',
     summary:
       'Class timetables, room and instructor allocation, teaching load distribution, conflict detection and exam invigilation. Deployed for Wollo University and configurable for any academic program.',
-    href: 'https://schedule.hyperagencyet.com/',
-    hrefLabel: 'schedule.hyperagencyet.com',
-    status: 'Live',
+    href: null,
+    hrefLabel: null,
+    status: 'Deployed · public URL offline',
   },
 ]
 
@@ -814,7 +836,7 @@ export const services: Service[] = [
     deliverable: 'A repository you own, deployed to your environment, with a handover session.',
     turnaround: '3 to 4 weeks',
     price: 'USD 900 to 1,500',
-    proof: { label: 'Class & Exam Scheduling System', href: 'https://schedule.hyperagencyet.com/' },
+    proof: { label: 'GIZE project management', href: 'https://gize.qmt.et/' },
   },
   {
     id: 'health-check',
@@ -831,6 +853,12 @@ export const services: Service[] = [
     proof: { label: 'Ethiopian Public Service University', href: 'http://www.epsu.edu.et/' },
   },
 ]
+
+/**
+ * Client quotes, exactly as written by the person named. Add an entry only
+ * once the client has approved the wording and being named.
+ */
+export const testimonials: Testimonial[] = []
 
 /** Terms that apply across every engagement, so nobody has to ask. */
 export const engagement = {

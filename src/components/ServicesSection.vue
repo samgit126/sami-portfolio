@@ -3,7 +3,7 @@ import SectionShell from './SectionShell.vue'
 import { vReveal } from '../directives/reveal'
 import { vSpotlight } from '../directives/spotlight'
 import { vMagnetic } from '../directives/magnetic'
-import { contactChannels, engagement, services } from '../data/portfolio'
+import { contactChannels, engagement, services, testimonials } from '../data/portfolio'
 
 /**
  * The hire-me-this-week section. Three fixed-scope offers with price and
@@ -137,6 +137,55 @@ const terms = [
         </div>
       </li>
     </ol>
+
+    <!-- Client quotes, verbatim. Hidden until there is at least one. -->
+    <div v-if="testimonials.length" class="mt-14">
+      <div v-reveal class="mb-6 flex items-center gap-3">
+        <h3 class="label text-ink-2">What clients say</h3>
+        <span
+          class="h-px min-w-6 flex-1"
+          style="background: linear-gradient(90deg, var(--line-strong), transparent)"
+          aria-hidden="true"
+        />
+      </div>
+
+      <div class="grid gap-5" :class="testimonials.length > 1 ? 'lg:grid-cols-2' : ''">
+        <figure
+          v-for="(t, i) in testimonials"
+          :key="t.id"
+          v-reveal:[i]
+          v-spotlight
+          class="card spotlight card-hover flex flex-col p-6 sm:p-8"
+        >
+          <span
+            aria-hidden="true"
+            class="gradient-text font-display text-5xl leading-none"
+          >
+            &ldquo;
+          </span>
+          <blockquote class="mt-2 flex-1 text-base leading-relaxed text-ink">
+            {{ t.quote }}
+          </blockquote>
+          <figcaption class="mt-6 border-t border-line pt-5">
+            <p class="font-display text-base font-semibold tracking-tight text-ink">{{ t.name }}</p>
+            <p class="mt-1 text-sm text-ink-2">{{ t.role }}, {{ t.organisation }}</p>
+            <p class="mt-3 text-sm text-ink-3">
+              On
+              <a
+                v-if="t.href"
+                :href="t.href"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-accent transition-colors hover:underline"
+              >
+                {{ t.project }}
+              </a>
+              <template v-else>{{ t.project }}</template>
+            </p>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
 
     <!-- Terms that apply to every engagement -->
     <div class="mt-14">
