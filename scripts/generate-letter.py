@@ -58,11 +58,12 @@ PARAGRAPHS = [
      "code or run it locally for you."),
 
     ("body",
-     "For academic task and workload, I built the Class & Exam Scheduling System now "
-     "running for Wollo University at https://schedule.hyperagencyet.com. It covers "
-     "class timetables, room and instructor allocation, teaching load distribution, "
-     "conflict detection and exam invigilation, and it is configurable for any "
-     "academic program rather than hard-coded to one institution."),
+     "For academic task and workload, I built the Class & Exam Scheduling System "
+     "deployed for Wollo University. It covers class timetables, room and instructor "
+     "allocation, teaching load distribution, conflict detection and exam "
+     "invigilation, and it is configurable for any academic program rather than "
+     "hard-coded to one institution. Its public deployment is currently offline, so "
+     "as with the repository I can demonstrate it live or walk you through the code."),
 
     ("body",
      "I also have some history with the University itself: I built the public EPSU "
