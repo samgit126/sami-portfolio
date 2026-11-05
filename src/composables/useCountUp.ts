@@ -8,6 +8,11 @@ import { onInView } from '../utils/inview'
  * the caller passes the whole string and gets back a string of the same shape:
  * the numeric part animates, any prefix/suffix stays put, and the decimal
  * precision of the source is preserved so "3.97" never lands on "4".
+ *
+ * The DOM always holds the real figure until the animation actually starts.
+ * Anything that reads the page without scrolling — a crawler, a link preview,
+ * a screen reader landing on the hero — gets "6+", not a "0" waiting for an
+ * intersection observer that may never fire.
  */
 export function useCountUp(raw: string, duration = 1400) {
   const match = raw.match(/^(\D*)([\d.,]+)(.*)$/)
@@ -22,7 +27,7 @@ export function useCountUp(raw: string, duration = 1400) {
     !match ||
     isYear
 
-  const display: Ref<string> = ref(reduced ? raw : `${match![1]}0${match![3]}`)
+  const display: Ref<string> = ref(raw)
 
   let cancel: (() => void) | undefined
   let frame = 0
@@ -52,8 +57,8 @@ export function useCountUp(raw: string, duration = 1400) {
       return
     }
     const decimals = digits.includes('.') ? digits.split('.')[1].length : 0
-    display.value = `${prefix}${(0).toFixed(decimals)}${suffix}`
 
+    // Drop to zero only when the count-up begins, never before.
     cancel = onInView(node, () => start(target, prefix, suffix, decimals))
   }
 
