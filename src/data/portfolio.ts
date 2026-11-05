@@ -140,6 +140,25 @@ export interface ContactChannel {
   external?: boolean
 }
 
+/**
+ * A fixed-scope engagement a client can buy without a discovery call. Scope,
+ * deliverable and turnaround are spelled out so the price means something.
+ */
+export interface Service {
+  id: string
+  name: string
+  /** Who it is for, in one line. */
+  fit: string
+  /** What is included. */
+  scope: string[]
+  /** What the client receives at the end. */
+  deliverable: string
+  turnaround: string
+  price: string
+  /** Live project that shows this kind of work already done. */
+  proof: { label: string; href: string }
+}
+
 export const profile = {
   name: 'Samuel Temesgen Yimer',
   shortName: 'Samuel Temesgen',
@@ -159,7 +178,7 @@ export const profile = {
   /* Sits directly under the headline on the site, so it must not repeat it. */
   pitch:
     'I turn dense enterprise workflows into fast, accessible interfaces with Vue 3, TypeScript and Tailwind CSS — and set the standards the rest of the team builds against.',
-  availability: 'Open to front-end architecture & team-lead roles',
+  availability: 'Open to front-end architecture and team-lead roles, and taking on fixed-scope freelance work',
 } as const
 
 export const stats = [
@@ -179,7 +198,8 @@ export const navItems: NavItem[] = [
   { id: 'publications', label: 'Research', index: '07' },
   { id: 'teaching', label: 'Teaching', index: '08' },
   { id: 'education', label: 'Education', index: '09' },
-  { id: 'contact', label: 'Contact', index: '10' },
+  { id: 'services', label: 'Services', index: '10' },
+  { id: 'contact', label: 'Contact', index: '11' },
 ]
 
 export const about = {
@@ -762,6 +782,79 @@ export const credentials: Credential[] = [
     meta: '2019',
   },
 ]
+
+/**
+ * Three ways to hire me for a bounded piece of work. Each one is something I
+ * do on the day job already, scoped so a client knows what they get and when.
+ */
+export const services: Service[] = [
+  {
+    id: 'migration-audit',
+    name: 'Vue 3 migration audit',
+    fit: 'For a team on Vue 2 or the Options API that needs a plan before touching the code.',
+    scope: [
+      'Read-through of the repository: components, stores, router, build and test setup.',
+      'Risk map of breaking changes, third-party libraries and patterns that will not carry over.',
+      'Effort estimate per module and a step-by-step migration order that keeps the app shippable throughout.',
+    ],
+    deliverable: 'A written report, around ten pages, plus a one-hour walkthrough call.',
+    turnaround: '5 working days',
+    price: 'from USD 250',
+    proof: { label: 'Haleta ERP', href: 'https://haleta.qelemmeda.et/' },
+  },
+  {
+    id: 'dashboard-starter',
+    name: 'PrimeVue admin dashboard',
+    fit: 'For a product that has a REST API and needs a back-office its team can extend.',
+    scope: [
+      'Vue 3, TypeScript, Tailwind CSS and PrimeVue on Vite, with authentication, roles and a responsive layout shell.',
+      'Three CRUD modules wired to your endpoints, with a data table that filters, sorts, paginates and exports.',
+      'Shared component library, Pinia stores and the conventions documented so the next developer follows them.',
+    ],
+    deliverable: 'A repository you own, deployed to your environment, with a handover session.',
+    turnaround: '3 to 4 weeks',
+    price: 'USD 900 to 1,500',
+    proof: { label: 'Class & Exam Scheduling System', href: 'https://schedule.hyperagencyet.com/' },
+  },
+  {
+    id: 'health-check',
+    name: 'Front-end health check',
+    fit: 'For a live Vue or Nuxt app that feels slow, fails accessibility reviews or is hard to change.',
+    scope: [
+      'Lighthouse and bundle analysis on the real deployment, not a local build.',
+      'WCAG 2.1 AA pass over the main user journeys: keyboard, screen reader, contrast, forms.',
+      'Code-level review of state, data fetching and component structure for the screens users complain about.',
+    ],
+    deliverable: 'A prioritised fix list with effort per item, and the quick wins already as pull requests where access allows.',
+    turnaround: '3 working days',
+    price: 'from USD 180',
+    proof: { label: 'Ethiopian Public Service University', href: 'http://www.epsu.edu.et/' },
+  },
+]
+
+/** Terms that apply across every engagement, so nobody has to ask. */
+export const engagement = {
+  hourly: 'USD 30 to 60 per hour',
+  hourlyNote: 'depending on scope and the overlap you need',
+  capacity: 'Up to 10 hours a week',
+  capacityNote: 'alongside my role at Qelem Meda, so fixed-scope work over full-time contracts',
+  timezone: 'UTC+3, Addis Ababa',
+  timezoneNote: 'overlaps European mornings and US East Coast afternoons',
+  steps: [
+    {
+      title: 'Tell me the problem',
+      text: 'One email with the repository or URL and what is hurting. I reply within two working days with questions or a fixed quote.',
+    },
+    {
+      title: 'Agree the scope',
+      text: 'A one-page scope with deliverable, dates and price. Half up front for fixed-scope work, the rest on delivery.',
+    },
+    {
+      title: 'Get the work, and the reasoning',
+      text: 'Small reviewable changes, a written summary at the end, and a walkthrough so your team can carry on without me.',
+    },
+  ],
+} as const
 
 export const contactChannels: ContactChannel[] = [
   {

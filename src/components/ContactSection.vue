@@ -25,7 +25,7 @@ async function copy(id: string, value: string) {
 <template>
   <SectionShell
     id="contact"
-    index="10"
+    index="11"
     eyebrow="Contact"
     title="Let's build something"
     :intro="`${profile.availability}. The fastest way to reach me is email, and I read everything.`"

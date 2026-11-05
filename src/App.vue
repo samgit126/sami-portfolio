@@ -12,6 +12,7 @@ import ContributionsSection from './components/ContributionsSection.vue'
 import PublicationsSection from './components/PublicationsSection.vue'
 import TeachingSection from './components/TeachingSection.vue'
 import EducationSection from './components/EducationSection.vue'
+import ServicesSection from './components/ServicesSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
 </script>
@@ -45,6 +46,7 @@ import SiteFooter from './components/SiteFooter.vue'
         <PublicationsSection />
         <TeachingSection />
         <EducationSection />
+        <ServicesSection />
         <ContactSection />
       </main>
 

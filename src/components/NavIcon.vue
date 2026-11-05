@@ -15,6 +15,7 @@ const paths: Record<string, string> = {
   publications: 'M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 1 6.5 18H19v3H6.5A2.5 2.5 0 0 1 4 20.5Z',
   teaching: 'M4 8h16v11H4zM4 8l8-4 8 4M9.5 19v-5h5v5',
   education: 'M12 4 2.5 9 12 14l9.5-5L12 4ZM6.5 11.5V17c0 1.5 2.6 3 5.5 3s5.5-1.5 5.5-3v-5.5',
+  services: 'M4 7h16v4H4zM4 13h16v4H4zM8 7V5h8v2M12 17v2',
   contact: 'M4 6h16v12H4zM4.5 7l7.5 6 7.5-6',
 }
 </script>
