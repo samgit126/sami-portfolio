@@ -4,7 +4,13 @@
  * (no extra npm dependencies — Chrome is already on the machine).
  *
  *   npm run cv
+ *   npm run resume                             # --short: two-page industry résumé
  *   SITE_URL=https://example.com npm run cv   # overrides the portfolio URL
+ *
+ * `--short` prints a two-page résumé for job boards and talent networks
+ * (Turing, Toptal, Arc): same data, no portrait, years per technology,
+ * one line per project, publications as titles only. Output:
+ * public/samuel-temesgen-yimer-resume.pdf.
  *
  * A full-length CV, set at a comfortable reading size rather than squeezed:
  *   summary -> core competencies -> skills -> experience -> teaching ->
@@ -32,6 +38,7 @@ const { profile, education, publications, credentials, contactChannels, repos } 
 
 // The live portfolio, printed in the contact line. Override with SITE_URL=…
 const SITE_URL = process.env.SITE_URL ?? 'https://sami-portfolio-gamma.vercel.app'
+const SHORT = process.argv.includes('--short')
 
 const esc = (v) =>
   String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -640,14 +647,190 @@ const html = `<!doctype html>
 </html>
 `
 
+
+/* ------------------------------------------------------------- résumé --
+ * The two-page version. Recruiters and matching engines read the first page
+ * hardest, so it opens with title, summary and years per technology, then the
+ * two roles with outcome bullets. Everything else is one line per item.
+ */
+
+const resumeTitle = 'Senior Front-End Engineer · Vue 3 / TypeScript · Front-End Team Lead'
+
+const resumeSummary =
+  'Front-end engineer with six years shipping enterprise web applications in Vue.js, TypeScript and Tailwind CSS on Laravel REST APIs, currently leading the front end of a commercial ERP platform. Eleven products delivered across ERP, higher education and public sector, including a multi-module single-page application whose architecture, component library and review process are mine. MSc in Software Engineering (CGPA 3.97) with three peer-reviewed IEEE papers on machine learning for software estimation. Remote-ready: UTC+3, overlapping European and US East Coast working hours.'
+
+/** Years are counted from first production use to Nov 2026. */
+const skillYears = [
+  ['Vue.js (2 & 3, Composition API)', '6+', 'Primary framework since 2019; Vue 3 + TypeScript since 2024'],
+  ['JavaScript (ES6+), HTML5, CSS3', '7', 'Every project, 2019 to date'],
+  ['TypeScript', '2+', 'Strict TS across Haleta ERP and all current products'],
+  ['Tailwind CSS', '4+', 'Design systems and component libraries'],
+  ['PrimeVue, Pinia, Vue Router, Vite', '2–3', 'Data tables, shared state, SPA routing, builds'],
+  ['Laravel & PHP, REST API design', '5+', 'Full-stack on smaller products; API integration on all'],
+  ['MySQL, PostgreSQL', '6', 'Relational modelling, reporting queries'],
+  ['Accessibility (WCAG), performance', '4+', 'Keyboard, contrast, heading order; Lighthouse-driven tuning'],
+  ['Git, GitHub, GitLab, code review, Agile/Scrum', '7', 'Team lead on review workflow since 2024'],
+  ['Python, scikit-learn, deep learning / BERT', '3', 'MSc research and the three published papers'],
+]
+
+const resumeExperience = [
+  {
+    ...experience[0],
+    highlights: [
+      'Lead the front end of Haleta ERP, a multi-module Vue 3 + TypeScript single-page application covering inventory, sales, point of sale, stock, reporting and audit, shipped from one codebase.',
+      'Own the front-end architecture: module boundaries, shared component library, coding standards and the review workflow a team of front-end developers works to; mentor through review.',
+      'Built the data-heavy table and dashboard layer (filtering, pagination, export) with Pinia state shared across modules, against a server-driven permission model.',
+      'Delivered eight further products in the same stack, from an academic scheduling system with conflict detection to public-facing university and corporate sites.',
+      'Work in Agile sprints with designers, Laravel back-end developers and stakeholders across the full SDLC.',
+    ],
+  },
+  {
+    ...experience[1],
+    highlights: [
+      'Founded and ran a small software company for five years: client relationships, scoping, estimation and delivery, plus the front-end build.',
+      'Built the Castor Oil Data Management system (production records and reporting) and the IEEE Student Branch site for Kombolcha Institute of Technology.',
+      'Delivered responsive, cross-browser Vue.js interfaces integrated with Laravel back ends, often as the sole engineer from requirements to deployment.',
+    ],
+  },
+]
+
+const resumeProjects = [
+  ['Haleta ERP', 'https://haleta.qelemmeda.et/', 'Front-End Team Lead', 'Commercial ERP for large organisations; SPA architecture, design system, data-heavy dashboards.'],
+  ['Class & Exam Scheduling System', null, 'Front-End Developer', 'Timetabling, room/instructor allocation and conflict detection for Wollo University; bilingual EN/AM; public URL currently offline, demo on request.'],
+  ['Wollo University Research Repository', null, 'Front-End Developer', 'Research-administration workflow across seven roles with approvals, versioned documents and a reporting dashboard; OAuth2/Passport.'],
+  ['Ethiopian Public Service University', 'http://www.epsu.edu.et/', 'Front-End Developer (volunteer)', 'Mobile-first, CMS-driven public university site built and delivered at no cost.'],
+  ['GIZE', 'https://gize.qmt.et/', 'Front-End Developer', 'Agile project-management tool with epics, stories, story points and analytics.'],
+  ['LyuHub', 'https://lyuhub.com/', 'Front-End Developer', 'Digital identity platform: portfolio, résumé, business card and membership card services.'],
+]
+
+const resumeSkillsBlock = `<table class="years"><tbody>${skillYears
+  .map(
+    ([name, yrs, note]) =>
+      `<tr><th>${esc(name)}</th><td class="yrs">${esc(yrs)} yrs</td><td>${esc(note)}</td></tr>`,
+  )
+  .join('')}</tbody></table>`
+
+const resumeExperienceBlock = resumeExperience
+  .map(
+    (r) => `<article class="entry">
+      <div class="row">
+        <p class="title"><strong>${esc(r.title)}</strong> <span class="org">| ${esc(r.company)}</span></p>
+        <p class="date">${esc(r.period)}</p>
+      </div>
+      <p class="place">${esc(r.location)} &nbsp;•&nbsp; ${esc(r.stack)}</p>
+      <ul>${r.highlights.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>
+    </article>`,
+  )
+  .join('')
+
+const resumeProjectsBlock = `<table class="compact tight"><tbody>${resumeProjects
+  .map(
+    ([name, href, role, note]) => `<tr>
+      <th>${href ? link(href, name) : esc(name)}<br /><span class="role">${esc(role)}</span></th>
+      <td>${esc(note)}</td>
+    </tr>`,
+  )
+  .join('')}</tbody></table>`
+
+const resumeEducationBlock = `<ul class="lines">${education
+  .map(
+    (e) =>
+      `<li><strong>${esc(e.degree)}</strong>, ${esc(e.school)}, ${esc(e.period)} &nbsp;•&nbsp; <span class="cgpa-inline">${esc(
+        e.grade,
+      )}</span>${e.note ? ` &nbsp;•&nbsp; ${esc(e.note)}` : ''}</li>`,
+  )
+  .join('')}</ul>`
+
+const resumePublicationsBlock = `<ul class="lines">${publications
+  .map((p) => `<li>${esc(p.title)}. <em>${esc(p.venue)}</em>, ${esc(p.year)}.</li>`)
+  .join('')}</ul>`
+
+const resumeMoreBlock = `<table class="skills"><tbody>
+  <tr><th>Teaching</th><td>Lecturer in Software Engineering, Wollo University (Kombolcha Institute of Technology), 2019 to date; exit-exam task force.</td></tr>
+  <tr><th>Open source</th><td>${link('https://github.com/samgit126', 'github.com/samgit126')}: internship management, admin panel starter, payroll and data-management systems in Laravel + Vue.</td></tr>
+  <tr><th>Languages</th><td>English (professional working proficiency) &nbsp;•&nbsp; Amharic (native)</td></tr>
+  <tr><th>Availability</th><td>Remote, UTC+3, with daily overlap for European and US East Coast teams. Open to contract and part-time engagements alongside the current lead role.</td></tr>
+</tbody></table>`
+
+const shortHtml = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>${esc(profile.name)}, Résumé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  :root { --brand: #2e74b5; --rule: #1f3864; --ink: #1a1a1a; --body: #333; --muted: #5f6b76; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 9pt; line-height: 1.36; color: var(--body); }
+  a { color: var(--brand); text-decoration: none; }
+  strong { color: var(--ink); font-weight: 600; }
+  h1 { margin: 0; font-size: 19pt; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); }
+  .subtitle { margin: 2px 0 0; font-size: 10.5pt; font-weight: 500; color: var(--brand); }
+  .contacts { margin: 5px 0 0; font-size: 8.6pt; }
+  .contacts a, .contacts .location { white-space: nowrap; }
+  .contacts .bar { color: #b9c2cc; padding: 0 2px; }
+  .location { color: var(--muted); }
+  section { margin-top: 8px; }
+  section h2 { margin: 0 0 5px; padding-top: 6px; border-top: 2pt solid var(--rule); font-size: 9.6pt; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--brand); break-after: avoid; }
+  .lead { margin: 0; }
+  .entry { margin-bottom: 6px; break-inside: avoid; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+  .title { margin: 0; font-size: 10pt; color: var(--ink); }
+  .title .org { color: var(--brand); font-weight: 500; }
+  .date { margin: 0; flex-shrink: 0; white-space: nowrap; font-size: 8.8pt; font-style: italic; color: var(--muted); }
+  .place { margin: 1px 0 0; font-size: 8.6pt; font-style: italic; color: var(--muted); }
+  .entry ul { margin: 4px 0 0; padding-left: 16px; }
+  .entry li { margin-bottom: 1.5px; }
+  table { width: 100%; border-collapse: collapse; }
+  table th, table td { text-align: left; vertical-align: top; }
+  table.years th, table.years td { padding: 2px 10px 2px 0; border-top: 0.5pt solid #e6eaef; }
+  table.years th { width: 36%; font-weight: 600; color: var(--ink); }
+  table.years .yrs { width: 48px; white-space: nowrap; font-weight: 600; color: var(--brand); }
+  table tr { break-inside: avoid; page-break-inside: avoid; }
+  table.compact th, table.compact td { padding: 4px 12px 4px 0; border-top: 0.5pt solid #e6eaef; font-weight: 400; }
+  table.compact th { width: 30%; font-weight: 600; color: var(--ink); }
+  table.compact .role { font-size: 8.3pt; font-weight: 400; color: var(--muted); font-style: italic; }
+  table.skills th { width: 92px; font-weight: 600; color: var(--ink); padding: 2px 10px 2px 0; }
+  table.skills td { padding: 2px 0; }
+  ul.lines { margin: 0; padding-left: 16px; }
+  ul.lines li { margin-bottom: 2px; }
+  .cgpa-inline { font-weight: 600; color: var(--brand); }
+</style>
+</head>
+<body>
+  <header>
+    <h1>${esc(profile.name)}</h1>
+    <p class="subtitle">${esc(resumeTitle)}</p>
+    <p class="contacts">${[...contacts, `<span class="location">${esc(profile.location)}</span>`].join(
+      ' <span class="bar">|</span> ',
+    )}</p>
+  </header>
+  ${section('Summary', `<p class="lead">${esc(resumeSummary)}</p>`)}
+  ${section('Technical skills', resumeSkillsBlock)}
+  ${section('Experience', resumeExperienceBlock)}
+  ${section('Selected projects', resumeProjectsBlock)}
+  ${section('Education', resumeEducationBlock)}
+  ${section('Publications', resumePublicationsBlock)}
+  ${section('Additional', resumeMoreBlock)}
+</body>
+</html>
+`
+
 mkdirSync(resolve(root, 'public'), { recursive: true })
-const htmlPath = resolve(root, 'cv.html')
-const pdfPath = resolve(root, 'public/samuel-temesgen-yimer-cv.pdf')
-writeFileSync(htmlPath, html)
+const htmlPath = resolve(root, SHORT ? 'resume.html' : 'cv.html')
+const pdfPath = resolve(
+  root,
+  SHORT ? 'public/samuel-temesgen-yimer-resume.pdf' : 'public/samuel-temesgen-yimer-cv.pdf',
+)
+writeFileSync(htmlPath, SHORT ? shortHtml : html)
 console.log('wrote', htmlPath)
 
 if (!CHROME) {
-  console.error('No Chrome/Chromium found — open cv.html and print to PDF manually.')
+  console.error(`No Chrome/Chromium found — open ${htmlPath} and print to PDF manually.`)
   process.exit(1)
 }
 
