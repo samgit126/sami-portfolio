@@ -661,16 +661,16 @@ const resumeSummary =
 
 /** Years are counted from first production use to Nov 2026. */
 const skillYears = [
-  ['Vue.js (2 & 3, Composition API)', '6+', 'Primary framework since 2019; Vue 3 + TypeScript since 2024'],
+  ['Vue.js (2 & 3, Composition API)', '6+', 'Primary framework since 2019; Vue 3 + TypeScript since 2022'],
   ['JavaScript (ES6+), HTML5, CSS3', '7', 'Every project, 2019 to date'],
-  ['TypeScript', '2+', 'Strict TS across Haleta ERP and all current products'],
+  ['TypeScript', '4', 'Since 2022; strict TS across Haleta ERP and all current products'],
   ['Tailwind CSS', '4+', 'Design systems and component libraries'],
   ['PrimeVue, Pinia, Vue Router, Vite', '2–3', 'Data tables, shared state, SPA routing, builds'],
   ['Laravel & PHP, REST API design', '5+', 'Full-stack on smaller products; API integration on all'],
   ['MySQL, PostgreSQL', '6', 'Relational modelling, reporting queries'],
   ['Accessibility (WCAG), performance', '4+', 'Keyboard, contrast, heading order; Lighthouse-driven tuning'],
   ['Git, GitHub, GitLab, code review, Agile/Scrum', '7', 'Team lead on review workflow since 2024'],
-  ['Python, scikit-learn, deep learning / BERT', '3', 'MSc research and the three published papers'],
+  ['Python, TensorFlow / Keras, scikit-learn, BERT', '3', 'MSc research and the three published papers'],
 ]
 
 const resumeExperience = [
